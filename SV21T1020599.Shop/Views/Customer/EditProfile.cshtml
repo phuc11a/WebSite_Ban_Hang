@@ -1,0 +1,109 @@
+﻿@using SV21T1020599.BusinessLayers
+@model SV21T1020599.DomainModels.Customer
+@{
+    ViewData["Title"] = "Thông Tin Cá Nhân";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center mb-0">Thông Tin Cá Nhân</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Message"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Message"]
+                        </div>
+                    }
+
+                    <form method="post" asp-action="Save" class="needs-validation" novalidate>
+                        <input type="hidden" asp-for="CustomerID" />
+                        <input type="hidden" asp-for="ContactName" value="@Model.CustomerName" />
+                        
+                        <div class="mb-3">
+                            <label asp-for="CustomerName" class="form-label">Họ và Tên</label>
+                            <input asp-for="CustomerName" class="form-control" required />
+                            <span asp-validation-for="CustomerName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" required type="email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label">Số Điện Thoại</label>
+                            <input asp-for="Phone" class="form-control" required />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Province" class="form-label">Tỉnh/Thành</label>
+                            <select asp-for="Province" class="form-control" required>
+                                <option value="">-- Chọn Tỉnh/Thành --</option>
+                                @foreach (var province in CommonDataService.ListOfProvinces())
+                                {
+                                    <option value="@province.ProvinceName" selected="@(Model.Province == province.ProvinceName)">
+                                        @province.ProvinceName
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="Province" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label">Địa Chỉ</label>
+                            <textarea asp-for="Address" class="form-control" rows="3" required></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        @if (!ViewContext.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach (var error in ViewContext.ModelState.Values.SelectMany(v => v.Errors))
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-save"></i> Lưu Thay Đổi
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                                <i class="fa fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Validation script
+        (function () {
+            'use strict'
+            var forms = document.querySelectorAll('.needs-validation')
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+    </script>
+}

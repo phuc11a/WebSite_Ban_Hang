@@ -1,0 +1,291 @@
+﻿@model ProductsSearchResult
+
+<div class="fashion_section">
+    <div class="container">
+        <h1 class="fashion_taital">Sản phẩm của chúng tôi</h1>
+        <div class="fashion_section_2">
+            <div class="row">
+                @if (Model?.Data != null && Model.Data.Any())
+                {
+                    foreach (var item in Model.Data)
+                    {
+                        <div class="col-lg-4 col-sm-4 mb-4">
+                            <div class="box_main">
+                                <h4 class="shirt_text">@item.ProductName</h4>
+                                <p class="price_text">Giá: <span style="color: #262626;">@item.Price.ToString("N0") đ</span></p>
+                                <div class="product_img">
+                                    @if (!string.IsNullOrEmpty(item.Photo))
+                                    {
+                                        <img src="~/images/products/@item.Photo" alt="@item.ProductName">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/themes/images/no-image.png" alt="No image">
+                                    }
+                                </div>
+                                <div class="btn_main">
+                                    <a href="@Url.Action("Details", "Product", new { id = item.ProductID })" class="btn-detail">Chi tiết</a>
+                                    <a href="#" onclick="addToCart(@item.ProductID)" class="btn-cart">Thêm vào giỏ</a><button onclick="addToCart(@item.ProductID, '@item.ProductName', @item.Price, '@item.Photo', '@item.Unit')"
+                                                                                                                              class="btn-cart">
+                                        <i class="fa fa-shopping-cart"></i> Thêm vào giỏ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center">
+                        <p>Không có sản phẩm nào.</p>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if (Model?.RowCount > 0)
+        {
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="pagination-container">
+                        @for (int i = 1; i <= Math.Ceiling((double)Model.RowCount / Model.PageSize); i++)
+                        {
+                            <a href="@Url.Action("Index", "Product", new { page = i })" 
+                               class="page-number @(i == Model.Page ? "active" : "")">@i</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Reset và base styles */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .fashion_section {
+        padding: 40px 0;
+        background-color: #f8f9fa;
+    }
+
+    .fashion_section_2 {
+        margin: 0 -15px;
+    }
+
+    .fashion_taital {
+        text-align: center;
+        margin-bottom: 40px;
+        color: #333;
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    /* Product card styles */
+    .box_main {
+        background: #fff;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 0 0 30px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .box_main:hover {
+        transform: translateY(-5px);
+    }
+
+    .shirt_text {
+        font-size: 18px;
+        color: #333;
+        margin: 10px 0;
+        min-height: 50px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .price_text {
+        font-size: 16px;
+        color: #666;
+        margin: 10px 0;
+    }
+
+    .price_text span {
+        color: #f26522 !important;
+        font-weight: bold;
+    }
+
+    /* Image container */
+    .product_img {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 15px 0;
+        padding: 10px;
+        background: #fff;
+    }
+
+    .product_img img {
+        max-width: 100%;
+        max-height: 180px;
+        object-fit: contain;
+    }
+
+    /* Button styles */
+    .btn_main {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 15px;
+    }
+
+    .btn-detail, .btn-cart {
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+        color: white;
+        flex: 1;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-detail {
+        background: #f26522;
+    }
+
+    .btn-cart {
+        background: #333;
+    }
+
+    .btn-detail:hover, .btn-cart:hover {
+        opacity: 0.9;
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Pagination styles */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+    .page-number {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #333;
+        transition: all 0.3s ease;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .page-number:hover {
+        background-color: #f26522;
+        color: white;
+        border-color: #f26522;
+        text-decoration: none;
+    }
+
+    .page-number.active {
+        background-color: #f26522;
+        color: white;
+        border-color: #f26522;
+    }
+
+    /* Responsive styles */
+   
+
+        .col-lg-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .box_main {
+            margin-bottom: 20px;
+        }
+
+        .product_img {
+            height: 180px;
+        }
+
+        .btn_main {
+            flex-direction: column;
+        }
+
+        .btn-detail, .btn-cart {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+
+    
+
+        .fashion_taital {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .shirt_text {
+            font-size: 16px;
+            min-height: 40px;
+        }
+
+        .price_text {
+            font-size: 14px;
+        }
+
+        .product_img {
+            height: 150px;
+        }
+    }
+</style>
+
+@section scripts {
+    <script>
+        function addToCart(productId, productName, price, photo, unit) {
+            var data = {
+                ProductID: productId,
+                ProductName: productName,
+                Quantity: 1,
+                SalePrice: price,
+                Photo: photo,
+                Unit: unit
+            };
+
+            $.ajax({
+                url: '/Product/AddToCart',
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message);
+                        updateCartCount();
+                    } else {
+                        showToast(response.message);
+                    }
+                },
+                error: function() {
+                    showToast("Có lỗi xảy ra khi thêm vào giỏ hàng");
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,151 @@
+﻿@model SV21T1020599.DomainModels.Customer
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Đăng ký - Eflyer Shop</title>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .register-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 500px;
+            border: 4px solid #ffff00;
+        }
+
+        .shop-name {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            background-color: #ffff00;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 10px;
+            background-color: #ffff00;
+            border: none;
+            color: black;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-register:hover {
+            background-color: #e6e600;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="shop-name">
+            Đăng ký tài khoản
+        </div>
+
+        <form method="post" action="@Url.Action("Register", "Account")">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="CustomerName"
+                       placeholder="Họ và tên" required />
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="ContactName"
+                       placeholder="Tên liên hệ" required />
+            </div>
+
+            <div class="form-group">
+                <input type="email" class="form-control" name="Email"
+                       placeholder="Email" required />
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-control" name="Address"
+                       placeholder="Địa chỉ" required />
+            </div>
+
+            <div class="form-group">
+                <input type="tel" class="form-control" name="Phone"
+                       placeholder="Số điện thoại" required />
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="Password"
+                       placeholder="Mật khẩu" required />
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-control" name="ConfirmPassword"
+                       placeholder="Xác nhận mật khẩu" required />
+            </div>
+
+            @if (!ViewContext.ModelState.IsValid)
+            {
+                <div class="error-message">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <button type="submit" class="btn-register">
+                Đăng ký
+            </button>
+
+            <div class="login-link">
+                Đã có tài khoản? <a href="@Url.Action("Login", "Account")">Đăng nhập</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

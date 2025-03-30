@@ -1,0 +1,116 @@
+﻿@using SV21T1020599.DomainModels
+@model List<Order>
+@{
+    ViewData["Title"] = "Theo dõi đơn hàng";
+}
+
+<div class="container mt-4">
+    <h2>Theo dõi đơn hàng</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Bạn chưa có đơn hàng nào.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var order in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Đơn hàng #@order.OrderID</h5>
+                            <small>@order.OrderTime.ToString("dd/MM/yyyy HH:mm")</small>
+                        </div>
+                        <div class="card-body">
+                            <div class="progress mb-3">
+                                @{
+                                    var progressWidth = order.Status switch
+                                    {
+                                        1 => "25%",
+                                        2 => "50%",
+                                        3 => "75%",
+                                        4 => "100%",
+                                        _ => "0%"
+                                    };
+
+                                    var progressClass = order.Status switch
+                                    {
+                                        4 => "bg-success",
+                                        -1 => "bg-danger",
+                                        _ => "bg-primary"
+                                    };
+                                }
+                                <div class="progress-bar @progressClass" role="progressbar"
+                                     style="width: @progressWidth" aria-valuenow="@order.Status"
+                                     aria-valuemin="-1" aria-valuemax="4">
+                                </div>
+                            </div>
+
+                            <div class="status-text text-center mb-3">
+                                @switch (order.Status)
+                                {
+                                    case 1:
+                                        <span class="badge bg-info">Chờ xác nhận</span>
+                                        break;
+                                    case 2:
+                                        <span class="badge bg-primary">Đã xác nhận</span>
+                                        break;
+                                    case 3:
+                                        <span class="badge bg-warning">Đang giao hàng</span>
+                                        break;
+                                    case 4:
+                                        <span class="badge bg-success">Đã giao hàng</span>
+                                        break;
+                                    case -1:
+                                        <span class="badge bg-danger">Đã hủy</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">Không xác định</span>
+                                        break;
+                                }
+                            </div>
+
+                            <div class="order-details">
+                                <p><strong>Địa chỉ:</strong> @order.DeliveryAddress</p>
+                                <p><strong>Tổng tiền:</strong> @order.Details.Sum(d => d.SalePrice * d.Quantity).ToString("N0") VNĐ</p>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <a asp-action="OrderDetails" asp-route-id="@order.OrderID"
+                                   class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-info-circle"></i> Chi tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function refreshOrderStatus(orderId) {
+            $.get('/Order/GetOrderStatus', { orderId: orderId }, function(response) {
+                if (response.success) {
+                    // Cập nhật UI với trạng thái mới
+                    // Có thể thêm code cập nhật UI ở đây
+                }
+            });
+        }
+
+        // Tự động cập nhật trạng thái mỗi 30 giây
+        setInterval(function() {
+            $('.card').each(function() {
+                var orderId = $(this).find('[data-order-id]').data('order-id');
+                if (orderId) {
+                    refreshOrderStatus(orderId);
+                }
+            });
+        }, 30000);
+    </script>
+}

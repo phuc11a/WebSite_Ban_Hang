@@ -1,0 +1,124 @@
+@using SV21T1020599.DomainModels
+@model Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<div class="container mt-4">
+    <h2>Chi tiết đơn hàng #@Model.OrderID</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Thông tin đơn hàng</h5>
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>Mã đơn hàng:</td>
+                            <td><strong>#@Model.OrderID</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Ngày đặt hàng:</td>
+                            <td>@Model.OrderTime.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                        <tr>
+                            <td>Trạng thái:</td>
+                            <td>
+                                @switch (Model.Status)
+                                {
+                                    case 1:
+                                        <span class="badge bg-info">Chờ xác nhận</span>
+                                        break;
+                                    case 2:
+                                        <span class="badge bg-primary">Đã xác nhận</span>
+                                        break;
+                                    case 3:
+                                        <span class="badge bg-warning">Đang giao hàng</span>
+                                        break;
+                                    case 4:
+                                        <span class="badge bg-success">Đã giao hàng</span>
+                                        break;
+                                    case -1:
+                                        <span class="badge bg-danger">Đã hủy</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">Không xác định</span>
+                                        break;
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Thông tin giao hàng</h5>
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>Tỉnh/Thành phố:</td>
+                            <td>@Model.DeliveryProvince</td>
+                        </tr>
+                        <tr>
+                            <td>Địa chỉ:</td>
+                            <td>@Model.DeliveryAddress</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Chi tiết sản phẩm</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>Số lượng</th>
+                            <th class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="@WebConfig.IMAGE_SOURCE_HOST/images/products/@item.Photo" 
+                                             style="width: 50px; height: 50px; object-fit: cover;" 
+                                             class="me-2" />
+                                        <span>@item.ProductName</span>
+                                    </div>
+                                </td>
+                                <td>@item.SalePrice.ToString("N0") VNĐ</td>
+                                <td>@item.Quantity @item.Unit</td>
+                                <td class="text-end">@((item.SalePrice * item.Quantity).ToString("N0")) VNĐ</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Tổng cộng:</strong></td>
+                            <td class="text-end">
+                                <strong>@Model.Details.Sum(d => d.SalePrice * d.Quantity).ToString("N0") VNĐ</strong>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Product" asp-action="Index" class="btn btn-primary">
+            <i class="fa fa-shopping-cart"></i> Tiếp tục mua sắm
+        </a>
+    </div>
+</div> 

@@ -1,0 +1,156 @@
+﻿<div class="banner_bg_main">
+    <!-- header top section start -->
+    <div class="container">
+        <div class="header_section_top">
+            <div class="row">
+                <div class="col-sm-12">
+                    <!-- Nội dung header top section -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- header top section start -->
+    <!-- logo section start -->
+    <div class="logo_section">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="logo">
+                        <a asp-controller="Home" asp-action="Index">
+                            <h1 class="text-white" style="font-size: 48px; font-weight: 700;">Eflyer</h1>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- logo section end -->
+    <!-- header section start -->
+    <div class="header_section">
+        <div class="container">
+            <div class="containt_main">             
+                <div class="dropdown">
+                </div>
+                <div class="main">
+                    <!-- Another variation with a button -->
+                    <div class="input-group">
+                    </div>
+                </div>
+                <div class="header_box">
+                    <div class="login_menu">
+                        <ul>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="cartDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                                    <span class="padding_10">Giỏ hàng</span>
+                                    <span id="cartCount" class="badge badge-pill badge-danger">0</span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="cartDropdown">
+                                    <a class="dropdown-item" asp-controller="Order" asp-action="ShoppingCart">
+                                        <i class="fa fa-shopping-basket"></i> Xem giỏ hàng
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" asp-controller="Order" asp-action="TrackOrder">
+                                        <i class="fa fa-truck"></i> Theo dõi đơn hàng
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                @if (User.Identity?.IsAuthenticated == true)
+                                {
+                                    var userData = User.GetUserData();
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-user"></i>
+                                        <span class="padding_10">@userData?.Displayname</span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                        <a class="dropdown-item" asp-controller="Customer" asp-action="EditProfile">
+                                            <i class="fa fa-user"></i> Thông tin cá nhân
+                                        </a>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="ChangePassword">
+                                            <i class="fa fa-key"></i> Đổi mật khẩu
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
+                                            <i class="fa fa-sign-out"></i> Đăng xuất
+                                        </a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                        <i class="fa fa-sign-in"></i>
+                                        <span class="padding_10">Đăng nhập</span>
+                                    </a>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .dropdown-menu {
+            background-color: #f0f0f0; /* Màu xám nhạt */
+            color: #333; /* Màu chữ tối để dễ đọc */
+        }
+
+            .dropdown-menu a.dropdown-item {
+                color: #333; /* Màu chữ của các mục trong menu */
+            }
+
+                .dropdown-menu a.dropdown-item:hover {
+                    background-color: #e0e0e0; /* Màu nền khi hover */
+                    color: #000; /* Màu chữ khi hover */
+                }
+    </style>
+    <!-- header section end -->
+
+    <script>
+        function showToast(message) {
+            var toast = $('<div class="custom-toast">' + message + '</div>');
+            $('.toast-container').append(toast);
+            toast.fadeIn();
+            
+            setTimeout(function() {
+                toast.fadeOut(function() {
+                    toast.remove();
+                });
+            }, 3000);
+        }
+
+        function updateCartCount() {
+            $.get('/Order/GetCartCount', function(count) {
+                $('#cartCount').text(count);
+            });
+        }
+
+        // Cập nhật số lượng khi trang load
+        $(document).ready(function() {
+            updateCartCount();
+        });
+    </script>
+
+    <style>
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .custom-toast {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none;
+        }
+    </style>
+
+    <!-- Thêm container cho toast message -->
+    <div class="toast-container"></div>

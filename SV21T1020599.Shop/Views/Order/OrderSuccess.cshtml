@@ -1,0 +1,24 @@
+﻿@using SV21T1020599.DomainModels
+@model Order
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container mt-4">
+    <div class="text-center">
+        <i class="fa fa-check-circle text-success" style="font-size: 64px;"></i>
+        <h2 class="mt-3">Đặt hàng thành công!</h2>
+        <p>Mã đơn hàng của bạn là: <strong>#@TempData["OrderId"]</strong></p>
+        <p>Xin chào @TempData["CustomerName"],</p>
+        <p>Chúng tôi sẽ sớm liên hệ với bạn để xác nhận đơn hàng.</p>
+
+        <div class="mt-4">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">
+                <i class="fa fa-shopping-cart"></i> Tiếp tục mua sắm
+            </a>
+            <a asp-controller="Order" asp-action="OrderDetails" asp-route-id="@TempData["OrderId"]" class="btn btn-info">
+                <i class="fa fa-info-circle"></i> Xem chi tiết đơn hàng
+            </a>
+        </div>
+    </div>
+</div>

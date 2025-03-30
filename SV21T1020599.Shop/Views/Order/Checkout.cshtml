@@ -1,0 +1,108 @@
+﻿@model CheckoutViewModel
+
+<div class="container mt-4">
+    <h2>Thanh toán</h2>
+
+    <form id="checkoutForm" method="post">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Thông tin giao hàng</h5>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CustomerName">Tên khách hàng</label>
+                            <input asp-for="CustomerName" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CustomerContactName">Tên người liên hệ</label>
+                            <input asp-for="CustomerContactName" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CustomerPhone">Số điện thoại</label>
+                            <input asp-for="CustomerPhone" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CustomerEmail">Email</label>
+                            <input asp-for="CustomerEmail" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="DeliveryProvince">Tỉnh/Thành phố</label>
+                            <input asp-for="DeliveryProvince" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="DeliveryAddress">Địa chỉ giao hàng</label>
+                            <textarea asp-for="DeliveryAddress" class="form-control" rows="3" required></textarea>
+                            <span asp-validation-for="DeliveryAddress" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Đơn hàng của bạn</h5>
+                        @foreach (var item in Model.Cart)
+                        {
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>
+                                    <img src="@WebConfig.IMAGE_SOURCE_HOST/images/products/@item.Photo" style="width: 50px; height: 50px; object-fit: cover;" />
+                                    <span>@item.ProductName x @item.Quantity</span>
+                                </div>
+                                <span>@item.TotalPrice.ToString("N0") VNĐ</span>
+                            </div>
+                        }
+                        <hr />
+                        <div class="d-flex justify-content-between">
+                            <strong>Tổng cộng:</strong>
+                            <strong>@Model.Cart.Sum(m => m.TotalPrice).ToString("N0") VNĐ</strong>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-3" id="submitOrder">
+                            <i class="fa fa-check"></i> Xác nhận đặt hàng
+                        </button>
+                        <a asp-action="ShoppingCart" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fa fa-arrow-left"></i> Quay lại giỏ hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            $('#checkoutForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '@Url.Action("Checkout", "Order")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            alert(response.message || 'Có lỗi xảy ra khi đặt hàng');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                        alert('Có lỗi xảy ra khi đặt hàng');
+                    }
+                });
+            });
+        });
+    </script>
+}
